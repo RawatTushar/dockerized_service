@@ -21,11 +21,11 @@ jobs:
 
       - run: |
           docker build \
-            -t ${{ secrets.DOCKER_USERNAME }}/node-secret-app:latest .
+            -t ${{ secrets.DOCKER_USERNAME }}/dockerized_service:latest .
 
       - run: |
           docker push \
-            ${{ secrets.DOCKER_USERNAME }}/node-secret-app:latest
+            ${{ secrets.DOCKER_USERNAME }}/dockerized_service:latest
 
   deploy:
     needs: build
@@ -42,15 +42,15 @@ jobs:
           script: |
 
             docker pull \
-              ${{ secrets.DOCKER_USERNAME }}/node-secret-app:latest
+              ${{ secrets.DOCKER_USERNAME }}/dockerized_service:latest
 
-            docker stop node-secret-app || true
+            docker stop dockerized_service || true
 
-            docker rm node-secret-app || true
+            docker rm dockerized_service || true
 
             docker run -d \
-              --name node-secret-app \
+              --name dockerized_service \
               --restart always \
               --env-file ~/.env \
               -p 3000:3000 \
-              ${{ secrets.DOCKER_USERNAME }}/node-secret-app:latest
+              ${{ secrets.DOCKER_USERNAME }}/dockerized_service:latest
